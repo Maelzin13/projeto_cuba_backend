@@ -1,15 +1,28 @@
-
-import { Router } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpecs } from '../../docs/swagger/swagger-specs';
+import { Router } from 'express';
 
-const router = Router();
+const topicsRoutes = Router();
 const specs = swaggerJSDoc(swaggerSpecs);
 
-router.use('/swagger.json', (req, res) => {
+topicsRoutes
+  .get('/swagger.json', (req, res) => {
     res.json(specs);
-})
-router.use('/swagger', swaggerUi.serve, swaggerUi.setup(undefined,{explorer: true, swaggerUrl: '/docs/swagger.json'}));
+  })
+  .get(
+    '/swagger',
+    swaggerUi.serve,
+    swaggerUi.setup(undefined, {
+      explorer: true,
+      swaggerUrl: '/docs/swagger.json',
+    })
+  );
+
+const router = Router();
+let BASE_URL = process.env.NODE_BASE_URL || '/api/v1';
+
+
+router.use(`${BASE_URL}`, topicsRoutes)
 
 export default router;

@@ -1,13 +1,13 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpecs } from '../../docs/swagger/swagger-specs';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 
-const topicsRoutes = Router();
+const docRoutes = Router();
 const specs = swaggerJSDoc(swaggerSpecs);
 
-topicsRoutes
-  .get('/swagger.json', (req, res) => {
+docRoutes
+  .get('/swagger.json', (req:Request, res:Response) => {
     res.json(specs);
   })
   .get(
@@ -23,6 +23,6 @@ const router = Router();
 let BASE_URL = process.env.NODE_BASE_URL || '/api/v1';
 
 
-router.use(`${BASE_URL}`, topicsRoutes)
+router.use(`${BASE_URL}`, docRoutes)
 
 export default router;

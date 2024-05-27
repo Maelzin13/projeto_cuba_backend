@@ -1,4 +1,4 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 /*
 api/v1/login/oauth 
@@ -15,6 +15,7 @@ const Authenticate = async (req: Request, res: Response, next: NextFunction) => 
   const token = req.cookies.jwt_token;
   if (token) {
     // validar o jwt do cookies
+    
     next();
   }
 

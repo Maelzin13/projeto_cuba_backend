@@ -70,7 +70,7 @@ Thumbs.db
 
 # envs
 .env
-.env.example# Specifies intentionally untracked files to ignore when using Git
+
 # http://git-scm.com/docs/gitignore
 
 *~
@@ -134,6 +134,7 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+mongo/
 
 # System files
 .DS_Store

@@ -14,42 +14,38 @@ services:
     volumes:
       - .:/var/www
     depends_on:
-      - mongo-rs
+      - mongo
+      - mongo-test
     networks:
       - cuba-back
 
-  # Mongo ReplicaSet
-  mongo-rs:
-    build:
-      context: .
-      dockerfile: ./docker/mongo-rs.dockerfile
-      args:
-        MONGO_VERSION: 7
-    environment:
-      MONGO_REPLICA_HOST: 127.0.0.1
-      MONGO_REPLICA_PORT: 27018
-      MONGO_COMMAND: 'mongosh'
-    command: --replSet rs0 --keyFile /data/db/mongo-keyfile --bind_ip_all --port 27018
+  mongo:
+    image: mongo:latest
+    container_name: cuba-mongo
     ports:
-      - '27018:27018'
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'mongosh',
-          'admin',
-          '--port',
-          '27018',
-          '--eval',
-          "db.adminCommand('ping').ok",
-        ]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      - 27017:27017
+    volumes:
+      - './mongo/:/data/db'
     networks:
       - cuba-back
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: cuba
+      MONGO_INITDB_ROOT_PASSWORD: OzVPKo
+      MONGO_INITDB_DATABASE: cuba
+
+  mongo-test:
+    image: mongo:latest
+    container_name: cuba-mongo-test
+    ports:
+      - 27018:27017
+    volumes:
+      - './mongo/test:/data/db'
+    networks:
+      - cuba-back
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: cuba-test
+      MONGO_INITDB_ROOT_PASSWORD: OzVPKo
+      MONGO_INITDB_DATABASE: cuba
 
 networks:
   cuba-back:

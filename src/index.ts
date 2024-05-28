@@ -1,4 +1,5 @@
 // import 'reflect-metadata';
+import mongoose, { ConnectOptions } from 'mongoose';
 import app from './app';
 import path from 'path';
 
@@ -7,7 +8,11 @@ require('dotenv').config({
 });
 
 const port = process.env.PORT || 4500;
+const mongoUrl =
+  process.env.MONGO_URL || 'mongodb://localhost:27017/express-mongo';
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port})`);
+mongoose.connect(mongoUrl, {} as ConnectOptions).then(() => {
+  app.listen(port, () => {
+    console.log(`⚡️[server]: Server is running at http://localhost:${port})`);
+  });
 });

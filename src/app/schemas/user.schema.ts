@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { UserDocument } from '../../@types/user';
-import { Role } from './role';
+import { Role } from './role.schema';
 
 const UserSchema = new Schema(
   {

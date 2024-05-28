@@ -139,7 +139,3 @@ mongo/
 # System files
 .DS_Store
 Thumbs.db
-
-# envs
-.env
-.env.example

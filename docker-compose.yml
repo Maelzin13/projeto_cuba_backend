@@ -1,22 +1,22 @@
-version: "3.8"
+version: '3.8'
 services:
   # API
-  # study-api:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/api.dockerfile
-  #   image: study-api
-  #   container_name: study-api
-  #   working_dir: /var/www
-  #   restart: on-failure
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/var/www
-  #   depends_on:
-  #     - mongo-rs
-  #   networks:
-  #     - study-network
+  cuba-api:
+    build:
+      context: .
+      dockerfile: ./docker/api.dockerfile
+    image: cuba-api
+    container_name: cuba-api
+    working_dir: /var/www
+    restart: on-failure
+    ports:
+      - '4500:4500'
+    volumes:
+      - .:/var/www
+    depends_on:
+      - mongo-rs
+    networks:
+      - cuba-back
 
   # Mongo ReplicaSet
   mongo-rs:
@@ -28,19 +28,20 @@ services:
     environment:
       MONGO_REPLICA_HOST: 127.0.0.1
       MONGO_REPLICA_PORT: 27018
-      MONGO_COMMAND: "mongosh"
+      MONGO_COMMAND: 'mongosh'
+    command: --replSet rs0 --keyFile /data/db/mongo-keyfile --bind_ip_all --port 27018
     ports:
-      - "27018:27018"
+      - '27018:27018'
     restart: unless-stopped
     healthcheck:
       test:
         [
-          "CMD",
-          "mongosh",
-          "admin",
-          "--port",
-          "27018",
-          "--eval",
+          'CMD',
+          'mongosh',
+          'admin',
+          '--port',
+          '27018',
+          '--eval',
           "db.adminCommand('ping').ok",
         ]
       interval: 1m30s

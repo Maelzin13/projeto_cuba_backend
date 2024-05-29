@@ -31,5 +31,5 @@ For first time running do the follow command:
 Run Docker
 
 ```bash
-  docker-compose yp
+  docker-compose up
 ```

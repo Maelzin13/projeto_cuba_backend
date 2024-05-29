@@ -5,6 +5,7 @@ export type UserDocument = Document & {
   name: string;
   username: string;
   email: string;
+  password: string;
   verifiedEmail: boolean;
   avatar: string;
   biography: string;

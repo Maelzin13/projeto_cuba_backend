@@ -4,9 +4,10 @@ import { Role } from './role.schema';
 
 const UserSchema = new Schema(
   {
-    name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
+    name: { type: String},
+    username: { type: String, unique: true },
+    email: { type: String },
+    password: { type: String },
     verifiedEmail: { type: Boolean, default: false },
     avatar: { type: String },
     biography: { type: String },

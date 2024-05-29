@@ -9,11 +9,11 @@ require('dotenv').config({
 
 const port = process.env.PORT || 4500;
 const mongoUrl =
-  process.env.MONGO_URL || 'mongodb://localhost:27017/express-mongo';
+  process.env.MONGO_URL ||
+  'mongodb://cuba:OzVPKo@mongo:27017/cuba?authSource=admin';
 
-//mongoose.connect(mongoUrl, {} as ConnectOptions).then(() => {
-//});
-
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port})`);
+mongoose.connect(mongoUrl, {} as ConnectOptions).then(() => {
+  app.listen(port, () => {
+    console.log(`⚡️[server]: Server is running at http://localhost:${port})`);
+  });
 });

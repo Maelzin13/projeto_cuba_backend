@@ -15,38 +15,34 @@ const OAuthGithub = async (req: Request, res: Response) => {
     throw new Error('Dont have code');
   }
 
-  // trocar o code recebido pelo codigo de acesso
-  const accessToken = await GetGithubOAuthTokens({ code: code as string });
+  try {
 
-  // trocar o token de acesso pelos dados do usuario
-  const user: GithubUserResult | undefined = await GetGithubUser({
-    accessToken,
-  });
+    // trocar o code recebido pelo codigo de acesso
+    const accessToken = await GetGithubOAuthTokens({ code: code as string });
 
-  /*
-  -- verificar se o github_id ja existe
-  
-  -- verificar se o email ja existe // se o email exisitr e github_id nao existir, crie usuario sem email
-  -- verificar se o username ja existe // se username existir e o github_id nao existir, crie um usuario com o username do github + numeros aleatorios no final, 
-  
-  -- ao final de tudo, crie um cookie httpOnly com os dados do usuario e redirecione para o frontend
-  
-  */
+    // trocar o token de acesso pelos dados do usuario
+    const user: GithubUserResult | undefined = await GetGithubUser({
+      accessToken,
+    });
 
-  // crio jwt com user
-  const token = jwt.sign({ user }, secret, {
-    expiresIn: '24h',
-  });
+    // crio jwt com user
+    const token = jwt.sign({ user }, secret, {
+      expiresIn: '24h',
+    });
 
-  // retorno o cookie e redireciono o usuario para o frontend
-  return res
-    .cookie('jwt_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 24h 
-    })
-    .redirect(frontBaseUrl || 'http://localhost:3000');
+    // retorno o cookie e redireciono o usuario para o frontend
+    return res
+      .cookie('jwt_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 24h
+      })
+      .redirect(frontBaseUrl || 'http://localhost:3000');
+
+  } catch (error:any) {
+    throw new Error(error.message)
+  }
 };
 
 export { OAuthGithub };

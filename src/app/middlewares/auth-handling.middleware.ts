@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { OAuthGithub } from '../controllers/oauth/oauth-github/oauth-github.controller';
-
+import jwt, { VerifyErrors } from 'jsonwebtoken';
 /*
 api/v1/login/oauth 
 
@@ -12,17 +12,22 @@ api/v1/login/oauth?provider=credentials (header)
 
 */
 
-const Authenticate = async (
+const AuthHandling = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const secret = process.env.SECRET_KEY as string;
   const token = req.cookies.jwt_token;
   if (token) {
     // validar o jwt do cookies
-    console.log('Logado: ' + token);
-
-    next();
+    jwt.verify(token, secret, (err: VerifyErrors | null, decoded: any) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token inválido' });
+      }
+      return console.log('Usuário:', decoded.user);
+    });
+    return;
   }
 
   const { provider } = req.query;
@@ -32,7 +37,7 @@ const Authenticate = async (
       // return await GoogleOAuth
     }
     if (provider === 'github') {
-      await OAuthGithub(req, res);
+      return await OAuthGithub(req, res);
     }
     if (provider === 'credentials') {
       // return await CredentialsOAuth
@@ -44,4 +49,4 @@ const Authenticate = async (
   }
 };
 
-export { Authenticate };
+export { AuthHandling };

@@ -17,9 +17,11 @@ const OAuthGithub = async (req: Request, res: Response) => {
 
   // trocar o code recebido pelo codigo de acesso
   const accessToken = await GetGithubOAuthTokens({ code: code as string });
-  
+
   // trocar o token de acesso pelos dados do usuario
-  const user: GithubUserResult | null = await GetGithubUser({ accessToken });
+  const user: GithubUserResult | undefined = await GetGithubUser({
+    accessToken,
+  });
 
   /*
   -- verificar se o github_id ja existe
@@ -41,8 +43,8 @@ const OAuthGithub = async (req: Request, res: Response) => {
     .cookie('jwt_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 24h
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 24h 
     })
     .redirect(frontBaseUrl || 'http://localhost:3000');
 };

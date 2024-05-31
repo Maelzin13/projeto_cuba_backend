@@ -18,7 +18,7 @@ const OAuthGithub = async (req: Request, res: Response) => {
   try {
 
     // trocar o code recebido pelo codigo de acesso
-    const accessToken = await GetGithubOAuthTokens({ code: code as string });
+    const accessToken = await GetGithubOAuthTokens({code:code as string});
 
     // trocar o token de acesso pelos dados do usuario
     const user: GithubUserResult | undefined = await GetGithubUser({

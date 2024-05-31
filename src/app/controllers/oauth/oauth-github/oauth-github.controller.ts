@@ -5,6 +5,7 @@ import {
   GetGithubOAuthTokens,
   GetGithubUser,
 } from '../../../services/oauth/oauth.service';
+import { User } from '../../../schemas/user.schema';
 
 const OAuthGithub = async (req: Request, res: Response) => {
   const frontBaseUrl = process.env.FRONT_BASE_URL as string;
@@ -16,21 +17,22 @@ const OAuthGithub = async (req: Request, res: Response) => {
   }
 
   try {
-
-    // trocar o code recebido pelo codigo de acesso
     const accessToken = await GetGithubOAuthTokens({ code: code as string });
 
-    // trocar o token de acesso pelos dados do usuario
-    const user: GithubUserResult | undefined = await GetGithubUser({
+    const {
+      name,
+      avatar_url: avatar,
+      id: githubId,
+    }: GithubUserResult | undefined = await GetGithubUser({
       accessToken,
     });
 
-    // crio jwt com user
+    const user = await User.create({ name, avatar, githubId });
+
     const token = jwt.sign({ user }, secret, {
       expiresIn: '24h',
     });
 
-    // retorno o cookie e redireciono o usuario para o frontend
     return res
       .cookie('jwt_token', token, {
         httpOnly: true,
@@ -39,9 +41,8 @@ const OAuthGithub = async (req: Request, res: Response) => {
         maxAge: 24 * 60 * 60 * 1000, // 24h
       })
       .redirect(frontBaseUrl || 'http://localhost:3000');
-
-  } catch (error:any) {
-    throw new Error(error.message)
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 

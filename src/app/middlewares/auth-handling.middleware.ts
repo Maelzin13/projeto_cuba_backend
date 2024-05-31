@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { OAuthGithub } from '../controllers/oauth/oauth-github/oauth-github.controller';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
-import { UserDocument } from '../../@types/user';
 /*
 api/v1/login/oauth 
 
@@ -22,7 +21,7 @@ const AuthHandling = async (
   const token = req.cookies.jwt_token;
   if (token) {
     // validar o jwt do cookies
-    jwt.verify(token, secret, (err: VerifyErrors | null, decoded:any) => {
+    jwt.verify(token, secret, (err: VerifyErrors | null, decoded: any) => {
       if (err) {
         return res.status(401).json({ message: 'Login expired' });
       }
@@ -46,8 +45,7 @@ const AuthHandling = async (
 
     throw new Error('Invalid Provider');
   } catch (error: any) {
-    console.error(error.message);
-    return res.status(401).json({ msg: error.message });
+    throw new Error(error.message);
   }
 };
 

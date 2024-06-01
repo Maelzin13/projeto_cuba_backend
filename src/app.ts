@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { type Express } from 'express';
 import { ErrorHandling } from './app/middlewares/error-handling.middleware';
 import DefaultRoutes from './app/routes/default.routes';
+import RolesRoute from './app/routes/role.routes';
 import DocRoutes from './app/routes/doc.routes';
 import OAuthRoutes from './app/routes/oauth.routes';
 import CookieParser from 'cookie-parser';
@@ -20,6 +21,7 @@ app
   .use(CookieParser())
   .use(ErrorHandling)
   .use(DefaultRoutes)
+  .use(RolesRoute)
   .use(DocRoutes)
   .use(OAuthRoutes);
 
